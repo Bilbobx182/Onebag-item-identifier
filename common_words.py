@@ -1,25 +1,48 @@
 import re
+from nltk.stem import PorterStemmer,WordNetLemmatizer
+import nltk
+from nltk.corpus import words
+from nltk.tokenize import sent_tokenize, word_tokenize
+wnl = WordNetLemmatizer()
+
+def is_word_noun(word):
+
+    word_tags = nltk.pos_tag([word])
+    for word_list in word_tags:
+        for classification in word_list:
+            if 'N' in classification:
+                return True
+    return False
+
+def get_data_from_file(filename):
+    with open(filename, encoding="utf8") as f:
+        content = f.readlines()
+        return [x.strip() for x in content]
+
+def is_valid_line(line):
+
+    ## ToDo, Make this nice
+    if 'bag' in line  or 'clothes' in line or 'tech' in line or 'toiletries' in line or  'misc' in line or'www' in line or '_________' in line or '###' in line:
+        return False
+    else :
+        return True
+
+
+
 wordcount = {}
+data = get_data_from_file("Transformed-output.md")
+for line in data:
 
-with open("Transformed-output.md", encoding="utf8") as f:
-    content = f.readlines()
-content = [x.strip() for x in content]
+    if is_valid_line(line):
+        for word in word_tokenize(re.sub(r'\W+', ' ', line.lower()).strip()):
 
-ignore = ['bag','clothes','tech','toiletries','misc']
+            if len(word) > 2:
+                word = wnl.lemmatize(word)
+                if is_word_noun(word) :
+                    if word in wordcount:
+                        wordcount[word] += 1
+                    else:
+                        wordcount[word] = 1
 
-for line in content:
-    if not ('www' in line):
-        for word in line.split(" "):
-            word = str(re.sub(r'\W+', ' ', word.lower()).strip())
-            if not word == '':
-                if word in ignore:
-                    continue
-                if not word in wordcount:
-                    wordcount[word] = 1
-                else:
-                    wordcount[word] += 1
-
-print(wordcount)
-
-for item in wordcount:
+for item in {k: v for k, v in sorted(wordcount.items(),reverse=True, key=lambda x: x[1])}:
     print(item + "," + str(wordcount[item]))
