@@ -1,0 +1,4 @@
+rAuth.py
+venv/*
+.idea/*
+__pycache__/*
