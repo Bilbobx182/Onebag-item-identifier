@@ -1,8 +1,7 @@
 import re
-from nltk.stem import PorterStemmer,WordNetLemmatizer
+from nltk.stem import WordNetLemmatizer
 import nltk
-from nltk.corpus import words
-from nltk.tokenize import sent_tokenize, word_tokenize
+from nltk.tokenize import word_tokenize
 wnl = WordNetLemmatizer()
 
 def is_word_noun(word):
@@ -14,11 +13,6 @@ def is_word_noun(word):
                 return True
     return False
 
-def get_data_from_file(filename):
-    with open(filename, encoding="utf8") as f:
-        content = f.readlines()
-        return [x.strip() for x in content]
-
 def is_valid_line(line):
 
     ## ToDo, Make this nice
@@ -27,10 +21,8 @@ def is_valid_line(line):
     else :
         return True
 
-
-
 wordcount = {}
-data = get_data_from_file("Transformed-output.md")
+# data = get_data_from_file("Transformed-output.md")
 for line in data:
 
     if is_valid_line(line):

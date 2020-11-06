@@ -1,4 +1,4 @@
-rAuth.py
 venv/*
 .idea/*
 __pycache__/*
+src/secrets.py
